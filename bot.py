@@ -160,7 +160,6 @@ async def replace_image(
     message_id: int,
     new_file_id: str
 ):
-
     try:
 
         await bot.edit_message_media(
@@ -172,8 +171,7 @@ async def replace_image(
         )
 
         await message.answer(
-            "✅ Image replaced successfully!\n"
-            "Caption preserved."
+            "✅ Image replaced successfully!"
         )
 
     except Exception as e:
