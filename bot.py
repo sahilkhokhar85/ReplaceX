@@ -6,7 +6,10 @@ import re
 
 from aiogram import Bot, Dispatcher, F
 from aiogram.filters import Command
-from aiogram.types import Message, InputMediaPhoto
+from aiogram.types import (
+    Message,
+    InputMediaPhoto,
+)
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -162,12 +165,32 @@ async def replace_image(
 ):
     try:
 
+        # Try to get original channel post
+        original = await bot.forward_message(
+            chat_id=message.chat.id,
+            from_chat_id=chat_id,
+            message_id=message_id
+        )
+
+        # Get original caption and formatting
+        original_caption = original.caption
+        original_entities = original.caption_entities
+
+        # Replace image with caption
         await bot.edit_message_media(
             chat_id=chat_id,
             message_id=message_id,
             media=InputMediaPhoto(
-                media=new_file_id
+                media=new_file_id,
+                caption=original_caption,
+                caption_entities=original_entities
             )
+        )
+
+        # Delete forwarded copy
+        await bot.delete_message(
+            chat_id=message.chat.id,
+            message_id=original.message_id
         )
 
         await message.answer(
